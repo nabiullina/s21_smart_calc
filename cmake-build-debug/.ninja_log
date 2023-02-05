@@ -1,4 +1,0 @@
-# ninja log v5
-1	41	1675541086000000000	CMakeFiles/SmartCalc.dir/src/main.c.o	609ef7b73042f9a5
-1	51	1675541052000000000	CMakeFiles/SmartCalc.dir/src/stack.c.o	1f1920e584ed2826
-42	88	1675541086000000000	SmartCalc	e82610b9f77eceaf
