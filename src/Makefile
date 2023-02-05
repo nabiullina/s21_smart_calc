@@ -11,6 +11,5 @@ test: clean
 	$(CC) $(CFLAGS) $(TESTS).c stack.c $(TEST_FLAGS) -o $(TESTS)
 	./$(TESTS)
 
-
 clean:
 	rm -rf test *.o

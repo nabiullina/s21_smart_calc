@@ -39,7 +39,7 @@ void push(smart_stack **stack, double value, int importance, value_type type);
 void pop(smart_stack **last);
 int convert_to_polish(smart_stack **stack_top, char *str);
 void reverse_stack(smart_stack **stack, smart_stack **new_stack);
-double calc(smart_stack *stack);
+double calc(smart_stack *stack, double x);
 void MainCalc(char*str, double*res, double x);
 
 void output_list(smart_stack *stack_top);

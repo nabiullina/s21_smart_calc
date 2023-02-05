@@ -3,13 +3,11 @@
 #include <string.h>
 
 void MainCalc(char *str, double *res, double x) {
-  if (x) {
-  }
   smart_stack *stack = NULL;
   if (!convert_to_polish(&stack, str)) {
     smart_stack *new_stack = NULL;
     reverse_stack(&stack, &new_stack);
-    *res = calc(new_stack);
+    *res = calc(new_stack, x);
   }
 }
 
@@ -40,10 +38,13 @@ int convert_to_polish(smart_stack **stack_top, char *str) {
   smart_stack *operators = NULL;
   char *first_digit, *last_digit;
   double number = 0;
-  //  char prev = '(';
+  char prev = '(';
   int open_braces = 0, close_braces = 0;
   while (*str != '\0') {
-    if (*str >= '0' && *str <= '9') {
+    if (*str == 'x') {
+      push(stack_top, 0, 0, X);
+      ++str;
+    } else if (*str >= '0' && *str <= '9') {
       first_digit = str;
       do {
         last_digit = str;
@@ -93,6 +94,9 @@ int convert_to_polish(smart_stack **stack_top, char *str) {
     } else if (!strncmp(str, "tan", 3)) {
       push(&operators, 0, 4, Tan);
       str += 3;
+    } else if (!strncmp(str, "atan", 4)) {
+      push(&operators, 0, 4, Atan);
+      str += 4;
     } else if (!strncmp(str, "asin", 4)) {
       push(&operators, 0, 4, Asin);
       str += 4;
@@ -101,51 +105,52 @@ int convert_to_polish(smart_stack **stack_top, char *str) {
       str += 4;
     } else if (!strncmp(str, "mod", 3)) {
       push(&operators, 0, 2, Mod);
-      str += 4;
+      str += 3;
     } else if (*str == '-') {
-      if (operators != NULL)
-        while (operators->importance > 1) {
-          push(stack_top, 0, operators->importance, operators->type);
-          pop(&operators);
-        }
-      push(&operators, 0, 1, Minus);
+      while (operators != NULL && operators->importance >= 1) {
+        push(stack_top, 0, operators->importance, operators->type);
+        pop(&operators);
+      }
+      if (prev == '(')
+        push(&operators, 0, 1, Unary_minus);
+      else
+        push(&operators, 0, 1, Minus);
       ++str;
     } else if (*str == '+') {
-      if (operators != NULL)
-        while (operators->importance > 1) {
-          push(stack_top, 0, operators->importance, operators->type);
-          pop(&operators);
-        }
-      push(&operators, 0, 1, Plus);
+      while (operators != NULL && operators->importance >= 1) {
+        push(stack_top, 0, operators->importance, operators->type);
+        pop(&operators);
+      }
+      if (prev == '(')
+        push(&operators, 0, 1, Unary_plus);
+      else
+        push(&operators, 0, 1, Plus);
       ++str;
     } else if (*str == '*') {
-      if (operators != NULL)
-        while (operators->importance > 2) {
-          push(stack_top, 0, operators->importance, operators->type);
-          pop(&operators);
-        }
+      while (operators != NULL && operators->importance >= 2) {
+        push(stack_top, 0, operators->importance, operators->type);
+        pop(&operators);
+      }
       push(&operators, 0, 2, Multi);
       ++str;
     } else if (*str == '/') {
-      if (operators != NULL)
-        while (operators->importance > 2) {
-          push(stack_top, 0, operators->importance, operators->type);
-          pop(&operators);
-        }
+      while (operators != NULL && operators->importance >= 2) {
+        push(stack_top, 0, operators->importance, operators->type);
+        pop(&operators);
+      }
       push(&operators, 0, 2, Div);
       ++str;
     } else if (*str == '^') {
-      if (operators != NULL)
-        while (operators->importance > 3) {
-          push(stack_top, 0, operators->importance, operators->type);
-          pop(&operators);
-        }
+      while (operators != NULL && operators->importance >= 3) {
+        push(stack_top, 0, operators->importance, operators->type);
+        pop(&operators);
+      }
       push(&operators, 0, 3, Pow);
       ++str;
     }
-    //    --str;
-    //    prev = *str;
-    //    ++str;
+    --str;
+    prev = *str;
+    ++str;
   }
   if (operators != NULL) {
     if (close_braces != open_braces || operators->type == Close_brace ||
@@ -166,12 +171,16 @@ void reverse_stack(smart_stack **stack, smart_stack **new_stack) {
   }
 }
 
-double calc(smart_stack *stack) {
+double calc(smart_stack *stack, double x) {
   smart_stack *nums = NULL;
   double op1 = 0, op2 = 0;
   while (stack != NULL) {
+    op1 = 0, op2 = 0;
     if (stack->type == Num) {
       push(&nums, stack->data, 0, Num);
+      pop(&stack);
+    } else if (stack->type == X){
+      push(&nums, x, 0, Num);
       pop(&stack);
     } else {
       switch (stack->type) {
@@ -242,6 +251,11 @@ double calc(smart_stack *stack) {
           pop(&nums);
           push(&nums, acos(op1), 0, Num);
           break;
+        case Sqrt:
+          op1 = nums->data;
+          pop(&nums);
+          push(&nums, sqrt(op1), 0, Num);
+          break;
         case Ln:
           op1 = nums->data;
           pop(&nums);
@@ -257,11 +271,22 @@ double calc(smart_stack *stack) {
           pop(&nums);
           push(&nums, atan(op1), 0, Num);
           break;
+        case Unary_minus:
+          op1 = nums->data;
+          pop(&nums);
+          push(&nums, -op1, 0, Num);
+          break;
+        case Unary_plus:
+          op1 = nums->data;
+          pop(&nums);
+          push(&nums, fabs(op1), 0, Num);
+          break;
         default:
           break;
       }
       pop(&stack);
     }
   }
-  return nums->data;
+  if (nums != NULL) op1 = nums->data;
+  return op1;
 }

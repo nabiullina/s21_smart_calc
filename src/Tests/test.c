@@ -94,93 +94,93 @@ START_TEST(test_smart_calc_11) {
   ck_assert_double_eq_tol(result, 10, 1e-06);
 }
 END_TEST
-//
-//START_TEST(test_smart_calc_12) {
-//  double x = 0.0003;
-//  char input[255] = "asin(2*x)";
-//  double result;
-//  MainCalc(input, &result, x);
-//  ck_assert_double_eq_tol(result, 0.0006, 1e-06);
-//}
-//END_TEST
-//
-//START_TEST(test_smart_calc_13) {
-//  double x = 0.0019;
-//  char input[255] = "acos(2*x)";
-//  double result;
-//  MainCalc(input, &result, x);
-//  ck_assert_double_eq_tol(result, 1.567, 1e-03);
-//}
-//END_TEST
-//
-//START_TEST(test_smart_calc_14) {
-//  double x = 0.0019;
-//  char input[255] = "atan(2*x)";
-//  double result;
-//  MainCalc(input, &result, x);
-//  ck_assert_double_eq_tol(result, 0.00379998, 1e-06);
-//}
-//END_TEST
-//
-//START_TEST(test_smart_calc_15) {
-//  double x = 0.004;
-//  char input[255] = "tan(2*x)";
-//  double result;
-//  MainCalc(input, &result, x);
-//  ck_assert_double_eq_tol(result, 0.00800017, 1e-06);
-//}
-//END_TEST
-//
-//START_TEST(test_smart_calc_16) {
-//  double x = 25;
-//  char input[255] = "sqrt(2*x)";
-//  double result;
-//  MainCalc(input, &result, x);
-//  ck_assert_double_eq_tol(result, 7.07107, 1e-05);
-//}
-//END_TEST
-//
-//START_TEST(test_smart_calc_17) {
-//  double x = 2;
-//  char input[255] = "ln(10*x)";
-//  double result;
-//  MainCalc(input, &result, x);
-//  ck_assert_double_eq_tol(result, 2.99573, 1e-05);
-//}
-//END_TEST
-//
-//START_TEST(test_smart_calc_18) {
-//  double x = 2;
-//  char input[255] = "log(10*x)";
-//  double result;
-//  MainCalc(input, &result, x);
-//  ck_assert_double_eq_tol(result, 1.30103, 1e-05);
-//}
-//END_TEST
-//
-//START_TEST(test_smart_calc_19) {
-//  char input[255] = "()";
-//  double result;
-//  MainCalc(input, &result, 0.0);
-//  ck_assert_double_eq_tol(result, 0, 1e-06);
-//}
-//END_TEST
-//
-//START_TEST(test_smart_calc_20) {
-//  char input[255] = "3-(-3)";
-//  double result;
-//  MainCalc(input, &result, 0.0);
-//  ck_assert_double_eq_tol(result, 6, 1e-06);
-//}
-//END_TEST
-//
-//START_TEST(test_smart_calc_21) {
-//  char input[255] = "3-(+3)";
-//  double result;
-//  MainCalc(input, &result, 0.0);
-//  ck_assert_double_eq_tol(result, 0, 1e-06);
-//}
-//END_TEST
+
+START_TEST(test_smart_calc_12) {
+  double x = 0.0003;
+  char input[255] = "asin(2*x)";
+  double result;
+  MainCalc(input, &result, x);
+  ck_assert_double_eq_tol(result, 0.0006, 1e-06);
+}
+END_TEST
+
+START_TEST(test_smart_calc_13) {
+  double x = 0.0019;
+  char input[255] = "acos(2*x)";
+  double result;
+  MainCalc(input, &result, x);
+  ck_assert_double_eq_tol(result, 1.567, 1e-03);
+}
+END_TEST
+
+START_TEST(test_smart_calc_14) {
+  double x = 0.0019;
+  char input[255] = "atan(2*x)";
+  double result;
+  MainCalc(input, &result, x);
+  ck_assert_double_eq_tol(result, 0.00379998, 1e-06);
+}
+END_TEST
+
+START_TEST(test_smart_calc_15) {
+  double x = 0.004;
+  char input[255] = "tan(2*x)";
+  double result;
+  MainCalc(input, &result, x);
+  ck_assert_double_eq_tol(result, 0.00800017, 1e-06);
+}
+END_TEST
+
+START_TEST(test_smart_calc_16) {
+  double x = 25;
+  char input[255] = "sqrt(2*x)";
+  double result;
+  MainCalc(input, &result, x);
+  ck_assert_double_eq_tol(result, 7.07107, 1e-05);
+}
+END_TEST
+
+START_TEST(test_smart_calc_17) {
+  double x = 2;
+  char input[255] = "ln(10*x)";
+  double result;
+  MainCalc(input, &result, x);
+  ck_assert_double_eq_tol(result, 2.99573, 1e-05);
+}
+END_TEST
+
+START_TEST(test_smart_calc_18) {
+  double x = 2;
+  char input[255] = "log(10*x)";
+  double result;
+  MainCalc(input, &result, x);
+  ck_assert_double_eq_tol(result, 1.30103, 1e-05);
+}
+END_TEST
+
+START_TEST(test_smart_calc_19) {
+  char input[255] = "()";
+  double result;
+  MainCalc(input, &result, 0.0);
+  ck_assert_double_eq_tol(result, 0, 1e-06);
+}
+END_TEST
+
+START_TEST(test_smart_calc_20) {
+  char input[255] = "3-(-3)";
+  double result;
+  MainCalc(input, &result, 0.0);
+  ck_assert_double_eq_tol(result, 6, 1e-06);
+}
+END_TEST
+
+START_TEST(test_smart_calc_21) {
+  char input[255] = "3-(+3)";
+  double result;
+  MainCalc(input, &result, 0.0);
+  ck_assert_double_eq_tol(result, 0, 1e-06);
+}
+END_TEST
 
 int main() {
   Suite *s1 = suite_create("s21_smart_calc: ");
@@ -200,17 +200,17 @@ int main() {
   tcase_add_test(tc1_1, test_smart_calc_9);
   tcase_add_test(tc1_1, test_smart_calc_10);
   tcase_add_test(tc1_1, test_smart_calc_11);
-//  tcase_add_test(tc1_1, test_smart_calc_12);
-//  tcase_add_test(tc1_1, test_smart_calc_13);
-//  tcase_add_test(tc1_1, test_smart_calc_14);
-//  tcase_add_test(tc1_1, test_smart_calc_15);
-//  tcase_add_test(tc1_1, test_smart_calc_15);
-//  tcase_add_test(tc1_1, test_smart_calc_16);
-//  tcase_add_test(tc1_1, test_smart_calc_17);
-//  tcase_add_test(tc1_1, test_smart_calc_18);
-//  tcase_add_test(tc1_1, test_smart_calc_19);
-//  tcase_add_test(tc1_1, test_smart_calc_20);
-//  tcase_add_test(tc1_1, test_smart_calc_21);
+  tcase_add_test(tc1_1, test_smart_calc_12);
+  tcase_add_test(tc1_1, test_smart_calc_13);
+  tcase_add_test(tc1_1, test_smart_calc_14);
+  tcase_add_test(tc1_1, test_smart_calc_15);
+  tcase_add_test(tc1_1, test_smart_calc_15);
+  tcase_add_test(tc1_1, test_smart_calc_16);
+  tcase_add_test(tc1_1, test_smart_calc_17);
+  tcase_add_test(tc1_1, test_smart_calc_18);
+  tcase_add_test(tc1_1, test_smart_calc_19);
+  tcase_add_test(tc1_1, test_smart_calc_20);
+  tcase_add_test(tc1_1, test_smart_calc_21);
 
   srunner_run_all(sr, CK_ENV);
   result = srunner_ntests_failed(sr);
