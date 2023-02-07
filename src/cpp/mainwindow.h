@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QVector>
 
 extern "C" {
 #include "../stack.h"
@@ -19,6 +20,7 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+
 private slots:
     void update();
     void clear();
@@ -33,5 +35,9 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    double x_begin, x_end, h, x_;
+    int n;
+
+    QVector<double> x, y;
 };
 #endif // MAINWINDOW_H

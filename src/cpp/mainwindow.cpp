@@ -3,11 +3,11 @@
 
 enum previous_symbol{
     num,
-    func,
     op,
     dot,
     open_brace,
-    close_brace
+    close_brace,
+    x_num
 };
 
 int prev_sym = -1;
@@ -53,6 +53,17 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->pushButton_dot, SIGNAL(clicked()), this, SLOT(dot_button()));
     connect(ui->pushButton_clear, SIGNAL(clicked()), this, SLOT(clear()));
     connect(ui->pushButton_RES, SIGNAL(clicked()), this, SLOT(equal_button()));
+
+    ui->widget->yAxis->setRange(-10, 10);
+    ui->widget->xAxis->setRange(-10, 10);
+    h = 0.1;
+    x_begin = -3;
+    x_end = 3 + h;
+    n = (x_end - x_begin)/h + 2;
+    ui->widget->addGraph();
+    ui->widget->graph(0)->addData(x, y);\
+    ui->widget->replot();
+
 }
 
 MainWindow::~MainWindow()
@@ -64,7 +75,7 @@ MainWindow::~MainWindow()
 void MainWindow::update()
 {
     QPushButton *button = (QPushButton *)sender();
-    if (prev_sym == -1) {
+    if (prev_sym == -1 || ui->label->text() == "nan" || ui->label->text() == "inf") {
         ui -> label->setText(button->text());
     } else {
         ui -> label->setText(ui->label->text() + button->text());
@@ -74,7 +85,7 @@ void MainWindow::update()
 void MainWindow::x_button() {
     if (prev_sym == open_brace || prev_sym == op) {
         update();
-        prev_sym = X;
+        prev_sym = x_num;
     }
 }
 
@@ -88,7 +99,7 @@ void MainWindow::clear()
 }
 
 void MainWindow::num_button() {
-    if (prev_sym != close_brace && prev_sym != func) {
+    if (prev_sym != close_brace) {
         update();
         prev_sym = num;
     }
@@ -96,8 +107,8 @@ void MainWindow::num_button() {
 
 void MainWindow::operator_button()
 {
-    if (prev_sym == num || prev_sym == close_brace || prev_sym == X || prev_sym == -1) {
-      QPushButton *button = (QPushButton *)sender();
+    QPushButton *button = (QPushButton *)sender();
+    if ((prev_sym == num || prev_sym == close_brace || prev_sym == x_num || prev_sym == -1 || (prev_sym == open_brace && (button->text() == "+" || button->text() == "-"))) && ui->label->text() != "nan" && ui->label->text() != "inf") {
         ui->label->setText(ui->label->text() + button->text());
         dot_in_num = 0;
         prev_sym = op;
@@ -106,10 +117,12 @@ void MainWindow::operator_button()
 
 void MainWindow::func_button()
 {
-    if (prev_sym == op || prev_sym == close_brace || prev_sym == -1) {
+    if (prev_sym == op || prev_sym == open_brace || prev_sym == -1) {
         update();
+        ui->label->setText(ui->label->text() + "(");
         dot_in_num = 0;
-        prev_sym = func;
+        prev_sym = open_brace;
+        ++count_open_braces;
     }
 }
 
@@ -122,7 +135,7 @@ void MainWindow::dot_button() {
 }
 
 void MainWindow::open_brace_button() {
-    if (prev_sym == -1 || prev_sym == func || prev_sym == open_brace || prev_sym == op) {
+    if (prev_sym == -1|| prev_sym == open_brace || prev_sym == op) {
         update();
         prev_sym = open_brace;
         dot_in_num = 0;
@@ -131,7 +144,7 @@ void MainWindow::open_brace_button() {
 }
 
 void MainWindow::close_brace_button() {
-    if ((prev_sym == num || prev_sym == close_brace || prev_sym == X) && (count_open_braces != count_close_braces))  {
+    if ((prev_sym == num || prev_sym == close_brace || prev_sym == x_num) && (count_open_braces != count_close_braces))  {
         update();
         prev_sym = close_brace;
         dot_in_num = 0;
@@ -140,14 +153,20 @@ void MainWindow::close_brace_button() {
 }
 
 void MainWindow::equal_button() {
-  double res = 0.0;
-  if (ui->Xline->text().size() != 0) {
-    x_value = ui->Xline->text().toDouble();
-  }
-  char *str = new char(ui->label->text().length());
-  QByteArray byte_arr = ui->label->text().toLatin1();
-  strlcpy(str, byte_arr, ui->label->text().length() + 1);
-  MainCalc(str, &res, x_value);
-  QString valueAsString = QString::number(res, 'g', 15);
-  ui->label->setText(valueAsString);
+    if (prev_sym == num || prev_sym == close_brace || prev_sym == x_num) {
+        double res = 0.0;
+        if (ui->Xline->text().size() != 0) {
+          x_value = ui->Xline->text().toDouble();
+      }
+      char *str = new char(ui->label->text().length());
+      QByteArray byte_arr = ui->label->text().toLatin1();
+      strlcpy(str, byte_arr, ui->label->text().length() + 1);
+      MainCalc(str, &res, x_value);
+      QString valueAsString = QString::number(res, 'g', 15);
+      ui->label->setText(valueAsString);
+      if (res == 0)
+        prev_sym = -1;
+      if (res != (int)res)
+          dot_in_num = 1;
+    }
 }
