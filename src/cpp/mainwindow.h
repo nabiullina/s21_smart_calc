@@ -5,7 +5,7 @@
 #include <QVector>
 
 extern "C" {
-#include "../stack.h"
+#include "../smartcalc.h"
 }
 
 QT_BEGIN_NAMESPACE
@@ -32,6 +32,7 @@ private slots:
     void close_brace_button();
     void x_button();
     void equal_button();
+    void graph_button();
 
 private:
     Ui::MainWindow *ui;

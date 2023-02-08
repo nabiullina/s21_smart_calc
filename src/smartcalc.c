@@ -1,14 +1,16 @@
-#include "stack.h"
-
+#include "smartcalc.h"
 #include <string.h>
 
-void MainCalc(char *str, double *res, double x) {
+int MainCalc(char *str, double *res, double x) {
   smart_stack *stack = NULL;
   if (!convert_to_polish(&stack, str)) {
     smart_stack *new_stack = NULL;
     reverse_stack(&stack, &new_stack);
     *res = calc(new_stack, x);
+  } else {
+    return PARSE_ERROR;
   }
+  return OK;
 }
 
 smart_stack *init(double n, int importance, value_type type) {

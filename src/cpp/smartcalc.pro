@@ -11,12 +11,12 @@ CONFIG += c++17
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
-    ../stack.c \
+    ../smartcalc.c \
     qcustomplot.cpp
 
 HEADERS += \
     mainwindow.h \
-    ../stack.h \
+    ../smartcalc.h \
     qcustomplot.h
 
 FORMS += \

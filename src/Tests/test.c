@@ -1,6 +1,6 @@
 #include <check.h>
 
-#include "../stack.h"
+#include "../smartcalc.h"
 
 START_TEST(test_smart_calc_1) {
   char input[255] = "3+4*2/(1-5)^2";

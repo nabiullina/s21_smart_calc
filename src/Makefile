@@ -8,7 +8,7 @@ TESTS = Tests/test
 all: install open
 
 test: clean
-	$(CC) $(CFLAGS) $(TESTS).c stack.c $(TEST_FLAGS) -o $(TESTS)
+	$(CC) $(CFLAGS) $(TESTS).c smartcalc.c $(TEST_FLAGS) -o $(TESTS)
 	./$(TESTS)
 
 #install:
