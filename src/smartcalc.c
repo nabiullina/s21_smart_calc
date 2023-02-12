@@ -52,7 +52,7 @@ int convert_to_polish(smart_stack **stack_top, char *str) {
         last_digit = str;
         ++str;
       } while ((*str >= '0' && *str <= '9') || *str == '.');
-      if (*last_digit == '.') return PARSE_ERROR;
+//      if (*last_digit == '.') return PARSE_ERROR;
       number = strtod(first_digit, &last_digit);
       push(stack_top, number, 0, Num);
     } else if (*str == '(') {
@@ -60,7 +60,7 @@ int convert_to_polish(smart_stack **stack_top, char *str) {
       ++open_braces;
       ++str;
     } else if (*str == ')') {
-      while (operators->type != Open_brace && operators != NULL) {
+      while (operators != NULL && operators->type != Open_brace) {
         push(stack_top, operators->data, operators->importance,
              operators->type);
         pop(&operators);
@@ -78,36 +78,6 @@ int convert_to_polish(smart_stack **stack_top, char *str) {
       }
       ++close_braces;
       ++str;
-    } else if (!strncmp(str, "sin", 3)) {
-      push(&operators, 0, 4, Sin);
-      str += 3;
-    } else if (!strncmp(str, "cos", 3)) {
-      push(&operators, 0, 4, Cos);
-      str += 3;
-    } else if (!strncmp(str, "log", 3)) {
-      push(&operators, 0, 4, Log);
-      str += 3;
-    } else if (!strncmp(str, "ln", 2)) {
-      push(&operators, 0, 4, Ln);
-      str += 2;
-    } else if (!strncmp(str, "sqrt", 4)) {
-      push(&operators, 0, 4, Sqrt);
-      str += 4;
-    } else if (!strncmp(str, "tan", 3)) {
-      push(&operators, 0, 4, Tan);
-      str += 3;
-    } else if (!strncmp(str, "atan", 4)) {
-      push(&operators, 0, 4, Atan);
-      str += 4;
-    } else if (!strncmp(str, "asin", 4)) {
-      push(&operators, 0, 4, Asin);
-      str += 4;
-    } else if (!strncmp(str, "acos", 4)) {
-      push(&operators, 0, 4, Acos);
-      str += 4;
-    } else if (!strncmp(str, "mod", 3)) {
-      push(&operators, 0, 2, Mod);
-      str += 3;
     } else if (*str == '-') {
       while (operators != NULL && operators->importance >= 1) {
         push(stack_top, 0, operators->importance, operators->type);
@@ -149,6 +119,8 @@ int convert_to_polish(smart_stack **stack_top, char *str) {
       }
       push(&operators, 0, 3, Pow);
       ++str;
+    } else {
+      check_funcs(&str, &operators);
     }
     --str;
     prev = *str;
@@ -164,6 +136,40 @@ int convert_to_polish(smart_stack **stack_top, char *str) {
     }
   }
   return OK;
+}
+
+void check_funcs(char **str, smart_stack **operators) {
+  if (!strncmp(*str, "sin", 3)) {
+    push(operators, 0, 4, Sin);
+    (*str) += 3;
+  } else if (!strncmp(*str, "cos", 3)) {
+    push(operators, 0, 4, Cos);
+    (*str) += 3;
+  } else if (!strncmp(*str, "log", 3)) {
+    push(operators, 0, 4, Log);
+    (*str) += 3;
+  } else if (!strncmp(*str, "ln", 2)) {
+    push(operators, 0, 4, Ln);
+    (*str) += 2;
+  } else if (!strncmp(*str, "sqrt", 4)) {
+    push(operators, 0, 4, Sqrt);
+    (*str) += 4;
+  } else if (!strncmp(*str, "tan", 3)) {
+    push(operators, 0, 4, Tan);
+    (*str) += 3;
+  } else if (!strncmp(*str, "atan", 4)) {
+    push(operators, 0, 4, Atan);
+    (*str) += 4;
+  } else if (!strncmp(*str, "asin", 4)) {
+    push(operators, 0, 4, Asin);
+    (*str) += 4;
+  } else if (!strncmp(*str, "acos", 4)) {
+    push(operators, 0, 4, Acos);
+    (*str) += 4;
+  } else if (!strncmp(*str, "mod", 3)) {
+    push(operators, 0, 2, Mod);
+    (*str) += 3;
+  }
 }
 
 void reverse_stack(smart_stack **stack, smart_stack **new_stack) {

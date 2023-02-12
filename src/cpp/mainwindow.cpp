@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+
 #include <math.h>
 
 #include "./ui_mainwindow.h"
@@ -50,16 +51,14 @@ MainWindow::MainWindow(QWidget *parent)
   connect(ui->pushButton_clear, SIGNAL(clicked()), this, SLOT(clear()));
   connect(ui->pushButton_RES, SIGNAL(clicked()), this, SLOT(equal_button()));
   connect(ui->pushButton_graph, SIGNAL(clicked()), this, SLOT(graph_button()));
-
-
 }
 
 MainWindow::~MainWindow() { delete ui; }
 
 void MainWindow::update() {
   QPushButton *button = (QPushButton *)sender();
-  if (prev_sym == -1 || ui->label->text() == "nan" ||
-      ui->label->text() == "inf") {
+  if (prev_sym == -1 || ui->label->text().endsWith("nan") ||
+      ui->label->text().endsWith("inf")) {
     ui->label->setText(button->text());
   } else {
     ui->label->setText(ui->label->text() + button->text());
@@ -94,7 +93,7 @@ void MainWindow::operator_button() {
        prev_sym == -1 ||
        (prev_sym == open_brace &&
         (button->text() == "+" || button->text() == "-"))) &&
-      ui->label->text() != "nan" && ui->label->text() != "inf") {
+      !ui->label->text().endsWith("nan") && !ui->label->text().endsWith("inf")) {
     ui->label->setText(ui->label->text() + button->text());
     dot_in_num = 0;
     prev_sym = op;
@@ -141,11 +140,13 @@ void MainWindow::close_brace_button() {
 void MainWindow::equal_button() {
   if (prev_sym == num || prev_sym == close_brace || prev_sym == x_num) {
     double res = 0.0;
-    if (ui->Xline->text().size() != 0)
-      x_value = ui->Xline->text().toDouble();
+    x_value = 0;
+    if (ui->Xline->text().size() != 0) x_value = ui->Xline->text().toDouble();
+
     char *str = new char(ui->label->text().length());
     QByteArray byte_arr = ui->label->text().toLatin1();
     strlcpy(str, byte_arr, ui->label->text().length() + 1);
+
     int error = MainCalc(str, &res, x_value);
     if (error) {
       QMessageBox::about(this, "Invalid expression", "Invalid input");
@@ -153,6 +154,7 @@ void MainWindow::equal_button() {
       QString valueAsString = QString::number(res, 'g', 15);
       ui->label->setText(valueAsString);
     }
+    delete (str);
     if (res == 0) prev_sym = -1;
     if (res != (int)res) dot_in_num = 1;
   } else {
@@ -163,10 +165,14 @@ void MainWindow::equal_button() {
 void MainWindow::graph_button() {
   ui->widget->clearGraphs();
   if (ui->label->text() != "nan" && ui->label->text() != "inf") {
-    int x_begin = -10, x_end = 10, y_begin = -10, y_end = 10;
 
-    ui->widget->yAxis->setRange(x_begin, x_end);
-    ui->widget->xAxis->setRange(y_begin, y_end);
+    double x_begin = ui->line_x_begin->text().toDouble();
+    double x_end = ui->line_x_end->text().toDouble();
+    double y_begin = ui->line_y_begin->text().toDouble();
+    double y_end = ui->line_y_end->text().toDouble();
+
+    ui->widget->xAxis->setRange(x_begin, x_end);
+    ui->widget->yAxis->setRange(y_begin, y_end);
     h = 0.1;
     double Y = 0.0;
     char *str = new char(ui->label->text().length());
@@ -175,13 +181,10 @@ void MainWindow::graph_button() {
     int error = OK;
     for (double X_ = x_begin; X_ < x_end && !error; X_ += h) {
       error = MainCalc(str, &Y, X_);
-      if (!isnan(Y) && !isinf(Y)) {
-        x.push_back(X_);
-        y.push_back(Y);
-      }
+      x.push_back(X_);
+      y.push_back(Y);
     }
-    if (error)
-      QMessageBox::about(this, "Invalid expression", "Invalid input");
+    if (error) QMessageBox::about(this, "Invalid expression", "Invalid input");
     ui->widget->addGraph();
     ui->widget->graph(0)->addData(x, y);
     ui->widget->replot();

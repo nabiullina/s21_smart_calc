@@ -2,6 +2,14 @@
 
 #include "../smartcalc.h"
 
+START_TEST(test_many_cos) {
+  char *input = "cos(cos(cos(cos(cos(cos(cos(cos(6))))))))";
+  double result;
+  MainCalc(input, &result, 0.0);
+  ck_assert_double_eq(result, 0.78542785606);
+}
+END_TEST
+
 START_TEST(test_smart_calc_1) {
   char input[255] = "3+4*2/(1-5)^2";
   double result;
@@ -190,6 +198,7 @@ int main() {
   suite_add_tcase(s1, tc1_1);
 
   tcase_add_test(tc1_1, test_smart_calc_1);
+  tcase_add_test(tc1_1, test_many_cos);
   tcase_add_test(tc1_1, test_smart_calc_2);
   tcase_add_test(tc1_1, test_smart_calc_3);
   tcase_add_test(tc1_1, test_smart_calc_4);
