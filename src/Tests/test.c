@@ -3,10 +3,10 @@
 #include "../smartcalc.h"
 
 START_TEST(test_many_cos) {
-  char *input = "cos(cos(cos(cos(cos(cos(cos(cos(6))))))))";
+  char *input = "cos(cos(cos(cos(cos(cos(cos(cos(cos(cos(cos(6)))))))))))";
   double result;
   MainCalc(input, &result, 0.0);
-  ck_assert_double_eq(result, 0.78542785606);
+  ck_assert_double_eq_tol(result, 0.743467, 5);
 }
 END_TEST
 

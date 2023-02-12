@@ -93,7 +93,8 @@ void MainWindow::operator_button() {
        prev_sym == -1 ||
        (prev_sym == open_brace &&
         (button->text() == "+" || button->text() == "-"))) &&
-      !ui->label->text().endsWith("nan") && !ui->label->text().endsWith("inf")) {
+      !ui->label->text().endsWith("nan") &&
+      !ui->label->text().endsWith("inf")) {
     ui->label->setText(ui->label->text() + button->text());
     dot_in_num = 0;
     prev_sym = op;
@@ -138,34 +139,38 @@ void MainWindow::close_brace_button() {
 }
 
 void MainWindow::equal_button() {
-  if (prev_sym == num || prev_sym == close_brace || prev_sym == x_num) {
-    double res = 0.0;
-    x_value = 0;
-    if (ui->Xline->text().size() != 0) x_value = ui->Xline->text().toDouble();
+  if (ui->label->text().size() != 0) {
+    if (prev_sym == num || prev_sym == close_brace || prev_sym == x_num) {
+      double res = 0.0;
+      x_value = 0.0;
+//      if (ui->Xline->text().size() != 0) x_value = ui->Xline->text().toDouble();
+//      QString qstring = ui->label->text();
+//      char *str = new char(qstring.length());
+//      QByteArray barr = qstring.toLatin1();
+//      strlcpy(str, barr, qstring.length() + 1);
+      QString needle = ui->label->text();
+      QByteArray ba_x = needle.toLocal8Bit();
+      char *str = ba_x.data();
 
-    char *str = new char(ui->label->text().length());
-    QByteArray byte_arr = ui->label->text().toLatin1();
-    strlcpy(str, byte_arr, ui->label->text().length() + 1);
-
-    int error = MainCalc(str, &res, x_value);
-    if (error) {
-      QMessageBox::about(this, "Invalid expression", "Invalid input");
+      int error = MainCalc(str, &res, x_value);
+      delete (str);
+      if (error) {
+        QMessageBox::about(this, "Invalid expression", "Invalid input");
+      } else {
+        QString valueAsString = QString::number(res, 'g', 15);
+        ui->label->setText(valueAsString);
+      }
+//      if (res == 0) prev_sym = -1;
+//      if (res != (int)res) dot_in_num = 1;
     } else {
-      QString valueAsString = QString::number(res, 'g', 15);
-      ui->label->setText(valueAsString);
+      QMessageBox::about(this, "Invalid expression", "Invalid input");
     }
-    delete (str);
-    if (res == 0) prev_sym = -1;
-    if (res != (int)res) dot_in_num = 1;
-  } else {
-    QMessageBox::about(this, "Invalid expression", "Invalid input");
   }
 }
 
 void MainWindow::graph_button() {
   ui->widget->clearGraphs();
   if (ui->label->text() != "nan" && ui->label->text() != "inf") {
-
     double x_begin = ui->line_x_begin->text().toDouble();
     double x_end = ui->line_x_end->text().toDouble();
     double y_begin = ui->line_y_begin->text().toDouble();
