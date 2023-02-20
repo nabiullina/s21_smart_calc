@@ -38,3 +38,5 @@ clean:
 	@rm -rf *.gcno
 	@rm -rf *.info
 	@rm -rf Tests/test
+
+rebuild: uninstall install open
