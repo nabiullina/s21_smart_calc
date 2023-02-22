@@ -123,6 +123,9 @@ void MainWindow::change_prev_sym() {
             default:
                 break;
         }
+    } else {
+      prev_sym = -1;
+      ui->label->setText("0");
     }
 }
 
