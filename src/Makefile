@@ -22,10 +22,10 @@ test: clean
 
 install: clean
 	cd ../ && mkdir build
-	cd cpp && qmake6 && make && make clean && rm Makefile && cd ../ && mv cpp/smartcalc.app ../build/
+	cd cpp && qmake6 && make && make clean && rm Makefile && cd ../ && mv cpp/smartcalc ../build/
 
 open:
-	cd ../build && open smartcalc.app
+	cd ../build && open smartcalc
 
 uninstall:
 	@rm -rf ../build*

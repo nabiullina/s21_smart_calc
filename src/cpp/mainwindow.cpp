@@ -6,6 +6,7 @@
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow) {
+    ui->line_x_begin->setInputMask("9");
   ui->setupUi(this);
   connect(ui->pushButton_0, SIGNAL(clicked()), this, SLOT(num_button()));
   connect(ui->pushButton_1, SIGNAL(clicked()), this, SLOT(num_button()));
@@ -43,6 +44,55 @@ MainWindow::MainWindow(QWidget *parent)
   connect(ui->pushButton_RES, SIGNAL(clicked()), this, SLOT(equal_button()));
   connect(ui->pushButton_graph, SIGNAL(clicked()), this, SLOT(graph_button()));
   connect(ui->pushButton_C, SIGNAL(clicked()), this, SLOT(backspace_button()));
+  connect(ui->pushButton_credit, SIGNAL(clicked()), this, SLOT(loan_button()));
+}
+
+void MainWindow::loan_button() {
+  QString term_text = ui->term_line->text();
+  QString percent_text = ui->percent_line->text();
+  QString sum_text = ui->sum_line->text();
+
+  if (!(term_text.isEmpty() && percent_text.isEmpty() &&
+        sum_text.isEmpty())) {
+    double amount = sum_text.toDouble();
+    double percentage = percent_text.toDouble();
+    double period = term_text.toDouble();
+
+    double payment = 0;
+    double total_sum = 0;
+    double sum_interest = amount;
+    QLocale::setDefault(QLocale(QLocale::English, QLocale::UnitedStates));
+    QString str_first_month_pay;
+    QString month_pay;
+    if (ui->cBox_type->currentText() == "Дифференцированный") {
+      for (int i = 1; i <= period; i++) {
+        payment =
+            amount / period + sum_interest * percentage * 30.4 / 365 / 100;
+        total_sum += payment;
+        sum_interest = amount - i * amount / period;
+        month_pay = QString("%L1").arg(payment, 0, 'f', 2);
+        if (i == 1) {
+          str_first_month_pay = month_pay;
+        }
+        month_pay = str_first_month_pay + " - " + month_pay;
+      }
+    } else {
+      double prStavka = percentage / 12 / 100;
+      payment = amount * (prStavka * pow(1 + prStavka, period) /
+                          (pow(1 + prStavka, period) - 1));
+      total_sum = payment * period;
+      month_pay = QString("%L1").arg(payment, 0, 'f', 2);
+    }
+    ui->label_monpay->setText(month_pay);
+
+    double overpayment = total_sum - amount;
+
+    ui->label_paysum->setText(QString("%L1").arg(total_sum, 0, 'f', 2));
+    ui->label_overpay->setText(QString("%L1").arg(overpayment, 0, 'f', 2));
+  } else {
+    QMessageBox::critical(this, "Invalid expression",
+                          "Fields should not be empty");
+  }
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *e)

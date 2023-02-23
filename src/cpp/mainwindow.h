@@ -46,6 +46,7 @@ private slots:
     void backspace_button();
     void change_prev_sym();
     void keyPressEvent(QKeyEvent *);
+    void loan_button();
 
 private:
     Ui::MainWindow *ui;
