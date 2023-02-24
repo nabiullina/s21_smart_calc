@@ -5,9 +5,13 @@
 #include "./ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent), ui(new Ui::MainWindow) {
-    ui->line_x_begin->setInputMask("9");
+    : QMainWindow(parent),
+      ui(new Ui::MainWindow),
+      x_doubleValidator(-1000000, 1000000, 15, this),
+      num_doubleValidator(0, 1000000000000, 2, this),
+      intValidator(0, 10000) {
   ui->setupUi(this);
+  set_validators();
   connect(ui->pushButton_0, SIGNAL(clicked()), this, SLOT(num_button()));
   connect(ui->pushButton_1, SIGNAL(clicked()), this, SLOT(num_button()));
   connect(ui->pushButton_2, SIGNAL(clicked()), this, SLOT(num_button()));
@@ -47,13 +51,32 @@ MainWindow::MainWindow(QWidget *parent)
   connect(ui->pushButton_credit, SIGNAL(clicked()), this, SLOT(loan_button()));
 }
 
+void MainWindow::set_validators() {
+  QLocale locale(QLocale::C);
+  locale.setNumberOptions(QLocale::RejectGroupSeparator);
+  x_doubleValidator.setLocale(locale);
+  x_doubleValidator.setNotation(QDoubleValidator::StandardNotation);
+
+  num_doubleValidator.setLocale(locale);
+  num_doubleValidator.setNotation(QDoubleValidator::StandardNotation);
+
+  ui->Xline->setValidator(&x_doubleValidator);
+  ui->line_x_begin->setValidator(&x_doubleValidator);
+  ui->line_y_begin->setValidator(&x_doubleValidator);
+  ui->line_x_end->setValidator(&x_doubleValidator);
+  ui->line_y_end->setValidator(&x_doubleValidator);
+
+  ui->term_line->setValidator(&intValidator);
+  ui->percent_line->setValidator(&num_doubleValidator);
+  ui->sum_line->setValidator(&num_doubleValidator);
+}
+
 void MainWindow::loan_button() {
   QString term_text = ui->term_line->text();
   QString percent_text = ui->percent_line->text();
   QString sum_text = ui->sum_line->text();
 
-  if (!(term_text.isEmpty() && percent_text.isEmpty() &&
-        sum_text.isEmpty())) {
+  if (!(term_text.isEmpty() && percent_text.isEmpty() && sum_text.isEmpty())) {
     double amount = sum_text.toDouble();
     double percentage = percent_text.toDouble();
     double period = term_text.toDouble();
@@ -66,8 +89,7 @@ void MainWindow::loan_button() {
     QString month_pay;
     if (ui->cBox_type->currentText() == "Дифференцированный") {
       for (int i = 1; i <= period; i++) {
-        payment =
-            amount / period + sum_interest * percentage * 30.4 / 365 / 100;
+        payment = amount / period + sum_interest * percentage * MONTH / 365 / 100;
         total_sum += payment;
         sum_interest = amount - i * amount / period;
         month_pay = QString("%L1").arg(payment, 0, 'f', 2);
@@ -95,88 +117,109 @@ void MainWindow::loan_button() {
   }
 }
 
-void MainWindow::keyPressEvent(QKeyEvent *e)
-{
-    if (e->key() == Qt::Key_0) ui->pushButton_0->click();
-    else if (e->key() == Qt::Key_1) ui->pushButton_1->click();
-    else if (e->key() == Qt::Key_2) ui->pushButton_2->click();
-    else if (e->key() == Qt::Key_3) ui->pushButton_3->click();
-    else if (e->key() == Qt::Key_4) ui->pushButton_4->click();
-    else if (e->key() == Qt::Key_5) ui->pushButton_5->click();
-    else if (e->key() == Qt::Key_6) ui->pushButton_6->click();
-    else if (e->key() == Qt::Key_7) ui->pushButton_7->click();
-    else if (e->key() == Qt::Key_8) ui->pushButton_8->click();
-    else if (e->key() == Qt::Key_9) ui->pushButton_9->click();
-    else if (e->key() == Qt::Key_Minus) ui->pushButton_min->click();
-    else if (e->key() == Qt::Key_Plus) ui->pushButton_plus->click();
-    else if (e->key() == Qt::Key_Slash) ui->pushButton_div->click();
-    else if (e->key() == Qt::Key_Asterisk) ui->pushButton_mul->click();
-    else if (e->key() == Qt::Key_Equal) ui->pushButton_RES->click();
-    else if (e->key() == Qt::Key_ParenLeft) ui->pushButton_OB->click();
-    else if (e->key() == Qt::Key_ParenRight) ui->pushButton_CB->click();
-    else if (e->key() == Qt::Key_AsciiCircum) ui->pushButton_pow->click();
-    else if (e->key() == Qt::Key_Backspace) ui->pushButton_C->click();
-    else if (e->key() == Qt::Key_Period) ui->pushButton_dot->click();
-    else if (e->key() == Qt::Key_Return) ui->pushButton_RES->click();
+void MainWindow::keyPressEvent(QKeyEvent *e) {
+  if (e->key() == Qt::Key_0)
+    ui->pushButton_0->click();
+  else if (e->key() == Qt::Key_1)
+    ui->pushButton_1->click();
+  else if (e->key() == Qt::Key_2)
+    ui->pushButton_2->click();
+  else if (e->key() == Qt::Key_3)
+    ui->pushButton_3->click();
+  else if (e->key() == Qt::Key_4)
+    ui->pushButton_4->click();
+  else if (e->key() == Qt::Key_5)
+    ui->pushButton_5->click();
+  else if (e->key() == Qt::Key_6)
+    ui->pushButton_6->click();
+  else if (e->key() == Qt::Key_7)
+    ui->pushButton_7->click();
+  else if (e->key() == Qt::Key_8)
+    ui->pushButton_8->click();
+  else if (e->key() == Qt::Key_9)
+    ui->pushButton_9->click();
+  else if (e->key() == Qt::Key_Minus)
+    ui->pushButton_min->click();
+  else if (e->key() == Qt::Key_Plus)
+    ui->pushButton_plus->click();
+  else if (e->key() == Qt::Key_Slash)
+    ui->pushButton_div->click();
+  else if (e->key() == Qt::Key_Asterisk)
+    ui->pushButton_mul->click();
+  else if (e->key() == Qt::Key_Equal)
+    ui->pushButton_RES->click();
+  else if (e->key() == Qt::Key_ParenLeft)
+    ui->pushButton_OB->click();
+  else if (e->key() == Qt::Key_ParenRight)
+    ui->pushButton_CB->click();
+  else if (e->key() == Qt::Key_AsciiCircum)
+    ui->pushButton_pow->click();
+  else if (e->key() == Qt::Key_Backspace)
+    ui->pushButton_C->click();
+  else if (e->key() == Qt::Key_Period)
+    ui->pushButton_dot->click();
+  else if (e->key() == Qt::Key_Return)
+    ui->pushButton_RES->click();
 }
 
 void MainWindow::backspace_button() {
-    QString text = ui->label->text();
-    text.chop(1);
-    ui->label->setText(text);
-    change_prev_sym();
+  QString text = ui->label->text();
+  text.chop(1);
+  ui->label->setText(text);
+  change_prev_sym();
 }
 
 void MainWindow::change_prev_sym() {
-    if (ui->label->text().size() != 0) {
-        prev_sym_int = ui->label->text()[ui->label->text().size() - 1].unicode();
-        switch (prev_sym_int) {
-            case '0':
-            case '1':
-            case '2':
-            case '3':
-            case '4':
-            case '5':
-            case '6':
-            case '7':
-            case '8':
-            case '9':
-                prev_sym = num;
-                break;
-            case 'n':
-            case 't':
-            case 's':
-            case 'g':
-            case '(':
-                prev_sym = open_brace;
-                break;
-            case 'x':
-                prev_sym = x_num;
-                break;
-            case '+':
-            case '-':
-            case '*':
-            case '/':
-                prev_sym = op;
-                break;
-            case 'd':
-                if (ui->label->text().endsWith("mod"))
-                    prev_sym = op;
-                else
-                    prev_sym = open_brace;
-                break;
-            case '.':
-                prev_sym = dot;
-                break;
-            case ')':
-                prev_sym = close_brace;
-            default:
-                break;
-        }
-    } else {
-      prev_sym = -1;
-      ui->label->setText("0");
+    QString str = ui->label->text();
+  if (str.size() != 0) {
+    prev_sym_int = ui->label->text()[ui->label->text().size() - 1].unicode();
+    switch (prev_sym_int) {
+      case '0':
+      case '1':
+      case '2':
+      case '3':
+      case '4':
+      case '5':
+      case '6':
+      case '7':
+      case '8':
+      case '9':
+        prev_sym = num;
+        break;
+      case 'n':
+      case 't':
+      case 's':
+      case 'g':
+      case '(':
+        prev_sym = open_brace;
+        break;
+      case 'x':
+        prev_sym = x_num;
+        break;
+      case '+':
+      case '-':
+      case '*':
+      case '/':
+        prev_sym = op;
+        break;
+      case 'd':
+        if (ui->label->text().endsWith("mod"))
+          prev_sym = op;
+        else
+          prev_sym = open_brace;
+        break;
+      case '.':
+        prev_sym = dot;
+        break;
+      case ')':
+        prev_sym = close_brace;
+      default:
+        break;
     }
+  } else {
+    prev_sym = -1;
+    ui->label->setText("0");
+  }
 }
 
 MainWindow::~MainWindow() { delete ui; }
@@ -289,8 +332,8 @@ void MainWindow::equal_button() {
       ui->label->setText("0");
     }
   } else {
-      QMessageBox::about(this, "Invalid expression", "Invalid input");
-      ui->label->setText("0");
+    QMessageBox::about(this, "Invalid expression", "Invalid input");
+    ui->label->setText("0");
   }
 }
 
@@ -317,8 +360,8 @@ void MainWindow::graph_button() {
       y.push_back(Y);
     }
     if (error) {
-        QMessageBox::about(this, "Invalid expression", "Invalid input");
-        ui->label->setText("0");
+      QMessageBox::about(this, "Invalid expression", "Invalid input");
+      ui->label->setText("0");
     }
     ui->widget->addGraph();
     ui->widget->graph(0)->addData(x, y);

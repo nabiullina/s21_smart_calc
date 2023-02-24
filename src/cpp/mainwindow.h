@@ -4,7 +4,8 @@
 #include <QMainWindow>
 #include <QVector>
 #include <QRegularExpressionValidator>
-#include <QValidator>
+#include <QIntValidator>
+#include <QDoubleValidator>
 
 extern "C" {
 #include "../smartcalc.h"
@@ -47,9 +48,13 @@ private slots:
     void change_prev_sym();
     void keyPressEvent(QKeyEvent *);
     void loan_button();
+    void set_validators();
 
 private:
     Ui::MainWindow *ui;
+    QDoubleValidator x_doubleValidator;
+    QDoubleValidator num_doubleValidator;
+    QIntValidator intValidator;
     double x_begin, x_end, h, x_;
     int n;
 

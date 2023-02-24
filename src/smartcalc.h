@@ -4,12 +4,12 @@
 typedef enum value_type {
   Num,
   X,
+  Open_brace,
+  Close_brace,
   Plus,
   Minus,
   Multi,
   Div,
-  Open_brace,
-  Close_brace,
   Pow,
   Mod,
   Unary_plus,
@@ -41,5 +41,10 @@ int convert_to_polish(smart_stack **stack_top, char *str);
 void reverse_stack(smart_stack **stack, smart_stack **new_stack);
 double calc(smart_stack *stack, double x);
 int MainCalc(char*str, double*res, double x);
-
+void calc_funcs(smart_stack **nums, double op1, value_type type);
+void calc_operators(smart_stack **nums, double op1, double op2, value_type type);
 void output_list(smart_stack *stack_top);
+int close_brace_case(smart_stack **stack_top, smart_stack **operators);
+void operators_case(smart_stack **stack_top, smart_stack **operators, char *str, int prev);
+void funcs_case(smart_stack **operators, char **str);
+int null_ops_case(int close_braces, int open_braces, smart_stack **operators, smart_stack **stack_top);
