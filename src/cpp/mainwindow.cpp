@@ -89,7 +89,8 @@ void MainWindow::loan_button() {
     QString month_pay;
     if (ui->cBox_type->currentText() == "Дифференцированный") {
       for (int i = 1; i <= period; i++) {
-        payment = amount / period + sum_interest * percentage * MONTH / 365 / 100;
+        payment =
+            amount / period + sum_interest * percentage * MONTH / 365 / 100;
         total_sum += payment;
         sum_interest = amount - i * amount / period;
         month_pay = QString("%L1").arg(payment, 0, 'f', 2);
@@ -170,7 +171,7 @@ void MainWindow::backspace_button() {
 }
 
 void MainWindow::change_prev_sym() {
-    QString str = ui->label->text();
+  QString str = ui->label->text();
   if (str.size() != 0) {
     prev_sym_int = ui->label->text()[ui->label->text().size() - 1].unicode();
     switch (prev_sym_int) {

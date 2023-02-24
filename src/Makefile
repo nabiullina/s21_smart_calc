@@ -62,12 +62,18 @@ clean:
 	@rm -rf report
 	@rm -rf *.gcda
 	@rm -rf *.gcno
+	@rm -rf .clang-format
 	@rm -rf *.info
 	@rm -rf Tests/test
 	@rm -rf ../*.gz
 	@rm -rf ../Archive_smartcalc
 	@rm -rf gcov
 
+style:
+	@cp ../materials/linters/.clang-format .
+	@echo "======= CHECK GOOGLE CODE STYLE ======="
+	@sleep 1
+	clang-format -n $(TESTS).c $(FUNCS) *.h *.c */*.cpp
 
 
 rebuild: uninstall install open

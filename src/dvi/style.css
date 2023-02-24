@@ -1,31 +1,30 @@
 body {
-    background-color: #121212;
+  background-color: #121212;
 }
 .container {
-    max-width: 700px;
-    margin: 70px auto;
-    //text-align: center;
+  max-width: 700px;
+  margin: 70px auto;
 }
 
 .cont-lists {
-    display: flex;
-    justify-content: center;
+  display: flex;
+  justify-content: center;
 }
 
 .list {
-    padding-right:50px;
+  padding-right:50px;
 }
 
 h1, h2, h3 {
-    color: #f4f4f4;
+  color: #f4f4f4;
 }
 
 ul {
-    list-style-type: none;
-    padding: 0;
+  list-style-type: none;
+  padding: 0;
 }
 
 p, li {
-    text-indent: 20px;
-    color: #777;
+  text-indent: 20px;
+  color: #777;
 }

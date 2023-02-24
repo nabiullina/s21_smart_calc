@@ -221,7 +221,7 @@ int main() {
   tcase_add_test(tc1_1, test_smart_calc_20);
   tcase_add_test(tc1_1, test_smart_calc_21);
 
-  srunner_run_all(sr, CK_ENV);
+  srunner_run_all(sr, CK_VERBOSE);
   result = srunner_ntests_failed(sr);
   srunner_free(sr);
   return result == 0 ? 0 : 1;
