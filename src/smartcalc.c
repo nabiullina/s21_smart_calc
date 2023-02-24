@@ -13,6 +13,7 @@ int MainCalc(char *sstr, double *res, double x) {
         smart_stack *new_stack = NULL;
         reverse_stack(&stack, &new_stack);
         *res = calc(new_stack, x);
+        free(stack);
       } else {
         return PARSE_ERROR;
       }
@@ -86,6 +87,7 @@ int convert_to_polish(smart_stack **stack_top, char *str) {
   if (operators != NULL)
     if (null_ops_case(close_braces, open_braces, &operators, stack_top))
       return PARSE_ERROR;
+  free(operators);
   return OK;
 }
 
@@ -227,6 +229,7 @@ double calc(smart_stack *stack, double x) {
     }
   }
   if (nums != NULL) op1 = nums->data;
+  free(nums);
   return op1;
 }
 

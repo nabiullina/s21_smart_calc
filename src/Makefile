@@ -43,6 +43,17 @@ install: uninstall clean
 	cd ../ && mkdir build
 	cd cpp && qmake6 && make && make clean && rm Makefile && cd ../ && mv cpp/$(SMARTCALC) ../build/
 
+check_leaks:
+ifeq ($(OS) ,Darwin)
+	$(CC) $(CFLAGS) smartcalc.c $(TESTS).c $(TEST_FLAGS) -o $(TESTS)
+	leaks -atExit -- ./$(TESTS)
+else
+ifeq ($(OS) ,Linux)
+	$(CC) $(CFLAGS) -g $(TESTS).c -o test smartcalc.c $(TEST_FLAGS)
+	CK_FORK=no valgrind --trace-children=yes --track-fds=yes --track-origins=yes --leak-check=full --show-leak-kinds=all --verbose --log-file=RESULT.txt ./test
+endif
+endif
+
 dvi:
 	open dvi/index.html
 
@@ -70,6 +81,9 @@ clean:
 	@rm -rf ../*.gz
 	@rm -rf ../Archive_smartcalc
 	@rm -rf gcov
+	@rm -rf test
+	@rm -rf RESULT.txt
+
 
 style:
 	@cp ../materials/linters/.clang-format .
