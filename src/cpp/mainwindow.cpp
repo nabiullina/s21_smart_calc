@@ -89,8 +89,7 @@ void MainWindow::loan_button() {
     QString month_pay;
     if (ui->cBox_type->currentText() == "Дифференцированный") {
       for (int i = 1; i <= period; i++) {
-        payment =
-            amount / period + sum_interest * percentage / 12.0 / 100;
+        payment = amount / period + sum_interest * percentage / 12.0 / 100;
         total_sum += payment;
         sum_interest = amount - i * amount / period;
         month_pay = QString("%L1").arg(payment, 0, 'f', 2);
