@@ -90,7 +90,7 @@ void MainWindow::loan_button() {
     if (ui->cBox_type->currentText() == "Дифференцированный") {
       for (int i = 1; i <= period; i++) {
         payment =
-            amount / period + sum_interest * percentage * MONTH / 365 / 100;
+            amount / period + sum_interest * percentage / 12.0 / 100;
         total_sum += payment;
         sum_interest = amount - i * amount / period;
         month_pay = QString("%L1").arg(payment, 0, 'f', 2);
@@ -309,13 +309,14 @@ void MainWindow::close_brace_button() {
 }
 
 void MainWindow::equal_button() {
-  if (ui->label->text().size() != 0 && ui->label->text().size() <= 255) {
+  QString expression = ui->label->text();
+  if (expression.size() != 0 && expression.size() <= 255 &&
+      !expression.contains("e")) {
     if (prev_sym == num || prev_sym == close_brace || prev_sym == x_num) {
       double res = 0.0;
       x_value = 0.0;
-      if (ui->Xline->text().size() != 0) x_value = ui->Xline->text().toDouble();
-      QString needle = ui->label->text();
-      QByteArray ba_x = needle.toLocal8Bit();
+      if (expression.size() != 0) x_value = ui->Xline->text().toDouble();
+      QByteArray ba_x = expression.toLocal8Bit();
       char *str = ba_x.data();
 
       int error = MainCalc(str, &res, x_value);

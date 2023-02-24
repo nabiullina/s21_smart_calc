@@ -11,10 +11,12 @@ GCOV_INFO = $(GCOV_REPORT).info
 GCOV_FLAGS  = --coverage -lcheck
 #--------------------------------------------------------------------------------------------
 OS = $(shell uname)
+SMARTCALC = smartcalc.app
 #--------------------------------------------------------------------------------------------
 ifeq ($(OS), Linux)
 	TEST_FLAGS += -lm -lsubunit -D_GNU_SOURCE -lrt
 	GCOV_FLAGS += -lrt -lsubunit -lpthread -lm
+	SMARTCALC = smartcalc
 endif
 #--------------------------------------------------------------------------------------------
 
@@ -39,7 +41,7 @@ endif
 
 install: uninstall clean
 	cd ../ && mkdir build
-	cd cpp && qmake6 && make && make clean && rm Makefile && cd ../ && mv cpp/smartcalc ../build/
+	cd cpp && qmake6 && make && make clean && rm Makefile && cd ../ && mv cpp/$(SMARTCALC) ../build/
 
 dvi:
 	open dvi/index.html
@@ -47,11 +49,11 @@ dvi:
 dist:
 	rm -rf ../Archive_smartcalc/
 	mkdir ../Archive_smartcalc/
-	cp -a -r **/ *.* Makefile ../build/smartcalc ../Archive_smartcalc
+	cp -a **/ *.* Makefile ../build/$(SMARTCALC) ../Archive_smartcalc
 	cd ../ && tar -cvzf Archive_smartcalc.tar.gz Archive_smartcalc
 
 open:
-	cd ../build && open smartcalc
+	cd ../build && open $(SMARTCALC)
 
 uninstall:
 	@rm -rf ../build*
@@ -73,7 +75,7 @@ style:
 	@cp ../materials/linters/.clang-format .
 	@echo "======= CHECK GOOGLE CODE STYLE ======="
 	@sleep 1
-	clang-format -n $(TESTS).c $(FUNCS) *.h *.c */*.cpp
+	clang-format -n $(TESTS).c $(FUNCS) *.h *.c */*.cpp */*.h
 
 
 rebuild: uninstall install open
